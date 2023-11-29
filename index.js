@@ -1,5 +1,29 @@
 const form = document.querySelector("#country-searchbar");
 
+const handleObjects = (object, objectContainer)=>{
+    const objectValues = Object.values(object);
+
+        if (objectValues.length === 1) {
+            const objectName = document.createElement("span");
+            objectName.innerText = objectValues[0];
+            objectContainer.appendChild(objectName);
+        } else {
+            objectValues.forEach((element, index) => {
+                const objectName = document.createElement("span");
+        
+                if (index === 0) {
+                    objectName.innerText = element;
+                } else if (index === objectValues.length - 1) {
+                    objectName.innerText = `, and ${element}.`;
+                } else {
+                    objectName.innerText = `, ${element}`;
+                }
+        
+                objectContainer.appendChild(objectName);
+            });
+        };
+}
+
 const getCountryByName = async (countryName)=>{
     try{
         const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
@@ -28,11 +52,12 @@ const getCountryByName = async (countryName)=>{
 
         const commonName = document.createElement("p");
         commonName.innerHTML = `<strong> Common Name:</strong> ${data[0].name.common}`;
+        
         const officialName = document.createElement("p");
         officialName.innerHTML = `<strong> Official Name:</strong> ${data[0].name.official}`;
 
         const capital = document.createElement("p");
-        capital.innerHTML = `<strong>Capital:</strong>  ${data[0].capital}`;
+        capital.innerHTML = "<strong>Capital(s):</strong> ";
 
         const population = document.createElement("p");
         population.innerHTML = `<strong>Population:</strong> ${data[0].population}`;
@@ -44,31 +69,8 @@ const getCountryByName = async (countryName)=>{
         sectionTag.appendChild(officialName);
         sectionTag.appendChild(capital);
 
-        // console.log(data[0].languages);
-        // console.log(Object.values(data[0].languages));
-        // console.log(Object.values(data[0].languages).length);
-
-        const languagesValues = Object.values(data[0].languages);
-
-        if (languagesValues.length === 1) {
-            const languageName = document.createElement("span");
-            languageName.innerText = languagesValues[0];
-            languages.appendChild(languageName);
-        } else {
-            languagesValues.forEach((language, index) => {
-                const languageName = document.createElement("span");
-        
-                if (index === 0) {
-                    languageName.innerText = language;
-                } else if (index === languagesValues.length - 1) {
-                    languageName.innerText = `, and ${language}.`;
-                } else {
-                    languageName.innerText = `, ${language}`;
-                }
-        
-                languages.appendChild(languageName);
-            });
-        };
+        handleObjects(data[0].languages, languages);
+        handleObjects(data[0].capital, capital);
 
         sectionTag.appendChild(languages);
 
